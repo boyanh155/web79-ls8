@@ -5,6 +5,7 @@ import cors from "cors"
 import UserModel from './models/users.model.js';
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import multer from "multer"
 
 
 dotenv.config()
@@ -16,6 +17,17 @@ app.use(express.json({
 }))
 app.use(cors())
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname)
+    }
+})
+
+const uploader = multer({ storage: storage })
+
 //
 // try{
 // await mongoose.connect()
@@ -24,6 +36,13 @@ app.use(cors())
 mongoose.connect(process.env.DB_CONNECTION_STRING).then(
     () => {
         console.log("DB connected")
+
+        // UPLOAD IMAGE
+        app.post("/upload", (req, res) => {
+            res.send(`Upload image`)
+        })
+
+  
 
 
 
